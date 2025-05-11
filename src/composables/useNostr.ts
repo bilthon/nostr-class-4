@@ -1,12 +1,21 @@
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { ndk } from '../ndk'
-import { NDKEvent, NDKRelay } from '@nostr-dev-kit/ndk'
+import { NDKEvent, NDKRelay, NDKSubscription } from '@nostr-dev-kit/ndk'
 import { DEMO_TAG } from '../constants'
 
 export function useNostr() {
   const feed = ref<NDKEvent[]>([])
   const log = ref<string[]>([])
   const ready = ref(false)
+  let reactionsSub: NDKSubscription | null = null
+
+  // Track reactions separately - use a reactive object instead of Map
+  const reactions = ref<Record<string, NDKEvent[]>>({})
+
+  // Helper to get reactions for a note
+  function getReactionsForNote(noteId: string): NDKEvent[] {
+    return reactions.value[noteId] || []
+  }
 
   // Register event listeners after component is mounted
   onMounted(() => {
@@ -36,16 +45,50 @@ export function useNostr() {
   // Subscribe to notes with specific tag
   async function subscribe(tag = DEMO_TAG) {
     console.log('Subscribing to notes with tag:', tag)
-    const sub = ndk.subscribe({ kinds: [1], '#t': [tag] })
+
+    // Subscribe to notes
+    const notesSub = ndk.subscribe({ kinds: [1], '#t': [tag] })
     
-    sub.on('event', (ev) => {
+    notesSub.on('event', (ev) => {
       feed.value.unshift(ev)
+      // Initialize empty reactions array for new note
+      reactions.value[ev.id] = []
     })
     
-    sub.on('eose', () => {
+    notesSub.on('eose', () => {
       ready.value = true
     })
+
+    // Initial subscription to reactions
+    updateReactionsSubscription()
   }
+
+  // Update reactions subscription when feed changes
+  function updateReactionsSubscription() {
+    // Close existing subscription if any
+    reactionsSub?.stop()
+
+    // Only subscribe if we have notes
+    if (feed.value.length === 0) return
+
+    // Create new subscription for reactions to our notes
+    reactionsSub = ndk.subscribe({
+      kinds: [7],
+      '#e': feed.value.map(note => note.id)
+    })
+
+    reactionsSub.on('event', (reaction) => {
+      console.log('Received reaction:', reaction)
+      const targetId = reaction.getMatchingTags('e')[0]?.[1]
+      if (!targetId) return
+      addReaction(targetId, reaction)
+    })
+  }
+
+  // Watch feed changes to update reactions subscription
+  watch(() => feed.value.length, () => {
+    updateReactionsSubscription()
+  })
 
   // Publish a new note
   async function publish(text: string, tag = DEMO_TAG) {
@@ -73,5 +116,28 @@ export function useNostr() {
     await event.publish()
   }
 
-  return { feed, log, ready, subscribe, publish, like }
+  // Add a method to update reactions that ensures reactivity
+  function addReaction(noteId: string, reaction: NDKEvent) {
+    const existingReactions = reactions.value[noteId] || []
+    if (!existingReactions.some(r => r.id === reaction.id)) {
+      // Force reactivity by creating a new array
+      reactions.value = {
+        ...reactions.value,
+        [noteId]: [...existingReactions, reaction]
+      }
+      // Log the update
+      console.log(`Added reaction to note ${noteId}. New count:`, reactions.value[noteId].length)
+    }
+  }
+
+  return {
+    feed,
+    log,
+    ready,
+    subscribe,
+    publish,
+    like,
+    getReactionsForNote,
+    reactions
+  }
 } 

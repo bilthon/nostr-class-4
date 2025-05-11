@@ -24,16 +24,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { NDKEvent } from '@nostr-dev-kit/ndk'
 
 const props = defineProps<{
   event: NDKEvent
+  reactions: Record<string, NDKEvent[]>
 }>()
 
 defineEmits<{
   (e: 'like'): void
 }>()
+
+// Add a watcher to debug reactivity
+watch(() => props.reactions[props.event.id], (newReactions) => {
+  console.log(`Reactions changed for note ${props.event.id}:`, newReactions)
+}, { deep: true })
 
 // Format the pubkey to show first 8 chars
 const shortPubkey = computed(() => {
@@ -49,9 +55,11 @@ const formattedTime = computed(() => {
   return new Date(props.event.created_at! * 1000).toLocaleString()
 })
 
-// Count likes (reactions) to this note
+// Get like count from our reactions object
 const likeCount = computed(() => {
-  return props.event.getMatchingTags('e').length
+  const count = props.reactions[props.event.id]?.length || 0
+  console.log(`Computing likeCount for ${props.event.id}:`, count)
+  return count
 })
 </script>
 

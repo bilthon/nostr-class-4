@@ -11,6 +11,7 @@
         v-for="event in events"
         :key="event.id"
         :event="event"
+        :reactions="reactions"
         @like="$emit('like', event)"
       />
     </div>
@@ -23,6 +24,7 @@ import Note from './Note.vue'
 
 defineProps<{
   events: NDKEvent[]
+  reactions: Record<string, NDKEvent[]>
 }>()
 
 defineEmits<{
