@@ -27,12 +27,7 @@ const { feed, log, ready, subscribe, publish, like, reactions } = useNostr()
       :reactions="reactions"
       @like="like"
       v-if="ready"
-    />
-    
-    <details class="log-container">
-      <summary>Raw WebSocket Log ({{ log.length }})</summary>
-      <RawLog :lines="log" />
-    </details>
+    />    
   </div>
 </template>
 
