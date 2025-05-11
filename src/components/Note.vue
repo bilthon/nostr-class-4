@@ -78,9 +78,10 @@ const formattedTime = computed(() => {
 
 // Get like count from our reactions object
 const likeCount = computed(() => {
-  const count = props.reactions[props.event.id]?.length || 0
-  console.log(`Computing likeCount for ${props.event.id}:`, count)
-  return count
+  const reactions = props.reactions[props.event.id] || []
+  // Create a Set of unique pubkeys that liked this note
+  const uniqueLikers = new Set(reactions.map(reaction => reaction.pubkey))
+  return uniqueLikers.size
 })
 
 async function copyNoteId() {
