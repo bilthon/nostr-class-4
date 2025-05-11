@@ -2,10 +2,10 @@
 import { useNostr } from './composables/useNostr'
 import Publisher from './components/Publisher.vue'
 import Feed from './components/Feed.vue'
-import RawLog from './components/RawLog.vue'
+// import RawLog from './components/RawLog.vue'
 import { DEMO_TAG } from './constants'
 // Destructure all the functions and refs we need from useNostr
-const { feed, log, ready, subscribe, publish, like, reactions } = useNostr()
+const { feed, ready, subscribe, publish, like, reactions } = useNostr()
 </script>
 
 <template>
@@ -23,7 +23,7 @@ const { feed, log, ready, subscribe, publish, like, reactions } = useNostr()
     </button>
     
     <Feed 
-      :events="feed" 
+      :events="feed"
       :reactions="reactions"
       @like="like"
       v-if="ready"

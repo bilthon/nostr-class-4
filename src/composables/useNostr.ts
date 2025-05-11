@@ -26,9 +26,9 @@ export function useNostr() {
     ndk.pool?.on('relay:disconnect', (relay: NDKRelay) => {
       log.value.push(`Disconnected from ${relay.url}`)
     })
-    ndk.pool?.on('relay:auth', (relay: NDKRelay, challenge: string) => {
-      log.value.push(`Authenticated with ${relay.url}`)
-    })
+    // ndk.pool?.on('relay:auth', (relay: NDKRelay, challenge: string) => {
+    //   log.value.push(`Authenticated with ${relay.url}`)
+    // })
     ndk.pool?.on('relay:authed', (relay: NDKRelay) => {
       log.value.push(`Authenticated with ${relay.url}`)
     })

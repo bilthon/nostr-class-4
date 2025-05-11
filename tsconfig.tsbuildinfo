@@ -1,0 +1,1 @@
+{"root":["./src/constants.ts","./src/main.ts","./src/ndk.ts","./src/vite-env.d.ts","./src/composables/usenostr.ts","./src/app.vue","./src/components/feed.vue","./src/components/helloworld.vue","./src/components/note.vue","./src/components/publisher.vue","./src/components/rawlog.vue"],"errors":true,"version":"5.8.3"}

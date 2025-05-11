@@ -38,7 +38,6 @@
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
 import { NDKEvent, NDKUser } from '@nostr-dev-kit/ndk'
-import { ndk } from '../ndk'
 
 const props = defineProps<{
   event: NDKEvent
