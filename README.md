@@ -1,5 +1,39 @@
-# Vue 3 + TypeScript + Vite
+# Demo Nostr Client
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A minimal, modern Nostr client built with Vue 3 and TypeScript. This project demonstrates core Nostr functionality in a clean, educational way.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Features
+
+- 📝 Publish and view notes with custom tags
+- ❤️ Like notes (one like per pubkey)
+- 🔍 View note IDs with copy-to-clipboard functionality
+- 📊 Real-time updates via WebSocket connections
+
+## Tech Stack
+
+- Vue 3 (Composition API)
+- TypeScript
+- NDK (Nostr Dev Kit)
+- Vite
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Learning Resources
+
+- [Nostr Protocol](https://github.com/nostr-protocol/nostr)
+- [NDK Documentation](https://github.com/nostr-dev-kit/ndk)
+- [Vue 3 Documentation](https://vuejs.org/)
+
+## License
+
+MIT
